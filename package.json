@@ -18,21 +18,15 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "configuration": {
-      "title": "获取单号正则",
-      "properties": {
-        "commit-helper.regex": {
-          "type": "string",
-          "default": "OMNI-\\d+",
-          "description": "根据正则匹配获取当前分支中的jira单号"
-        }
-      }
-    },
     "commands": [
       {
         "command": "webull-git-commit.createCommitFromBranch",
         "title": "Webull Git Commit Message",
         "icon": "$(symbol-constant)"
+      },
+      {
+        "command": "webull-git-commit.openBrowserByBranch",
+        "title": "Open Team Up"
       }
     ],
     "menus": {
