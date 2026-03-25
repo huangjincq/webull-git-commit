@@ -3,7 +3,7 @@
   "displayName": "Webull Git Commit Message",
   "description": "Webull Git Commit Message 生成插件",
   "publisher": "huangjin",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "icon": "logo.png",
   "engines": {
     "vscode": "^1.95.0"
@@ -16,26 +16,29 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "webull-git-commit.createCommitFromBranch",
         "title": "Webull Git Commit Message",
-        "icon": "$(symbol-constant)"
+        "icon": "$(symbol-enum)"
       },
       {
         "command": "webull-git-commit.openBrowserByBranch",
-        "title": "Open Team Up"
+        "title": "Open Team Up",
+        "icon": "$(link-external)"
       }
     ],
     "menus": {
       "scm/title": [
         {
           "command": "webull-git-commit.createCommitFromBranch",
-          "group": "navigation",
-          "when": "scmProvider == git"
+          "when": "scmProvider == git",
+          "group": "navigation"
         }
       ]
     }
