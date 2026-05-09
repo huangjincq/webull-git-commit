@@ -1,34 +1,42 @@
 import * as vscode from 'vscode'
 
 const gitCommitExtensions = (context: vscode.ExtensionContext) => {
-  // 获取当前分支名
-  const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports
+  const statusBarItem = vscode.window.createStatusBarItem(
+    'webull-git-commit.openBrowserByBranch',
+    vscode.StatusBarAlignment.Right,
+    100
+  )
+  statusBarItem.name = 'Open Team Up'
+  statusBarItem.text = `$(browser) Open Team Up`
+  statusBarItem.command = 'webull-git-commit.openBrowserByBranch'
+  statusBarItem.tooltip = 'Open Team Up'
 
-  if (!gitExtension.enabled) {
-    vscode.window.showErrorMessage('没有安装Git插件, 生成commit message 不可用')
-    return false
-  }
-
-  // 根据分支名称 生成 commit 消息
   const createCommitFromBranch = vscode.commands.registerCommand(
     'webull-git-commit.createCommitFromBranch',
-    (uri: vscode.Uri) => {
+    (_uri: vscode.Uri) => {
+      const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports
+      if (!gitExtension?.enabled) {
+        vscode.window.showErrorMessage('没有安装Git插件, 生成commit message 不可用')
+        return
+      }
       const repo = getGitRepo(gitExtension)
-
       if (repo) {
         const jiraId = getJiraId(repo)
         if (jiraId) {
-          const commitMessage = `feat[${jiraId}]:`
-          repo.inputBox.value = commitMessage
+          repo.inputBox.value = `feat[${jiraId}]:`
         } else {
           vscode.window.showErrorMessage('Jira 单号获取失败, 无法生成Commit Message')
         }
       }
     }
   )
-  context.subscriptions.push(createCommitFromBranch)
 
   const openBrowserByBranch = vscode.commands.registerCommand('webull-git-commit.openBrowserByBranch', () => {
+    const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports
+    if (!gitExtension?.enabled) {
+      vscode.window.showErrorMessage('没有安装Git插件')
+      return
+    }
     const repo = getGitRepo(gitExtension)
     if (repo) {
       const jiraId = getJiraId(repo)
@@ -42,14 +50,11 @@ const gitCommitExtensions = (context: vscode.ExtensionContext) => {
     }
   })
 
-  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right)
-  statusBarItem.text = `$(browser) Open Team Up`
-  statusBarItem.command = 'webull-git-commit.openBrowserByBranch'
-  statusBarItem.show()
-
   context.subscriptions.push(createCommitFromBranch)
   context.subscriptions.push(openBrowserByBranch)
   context.subscriptions.push(statusBarItem)
+
+  statusBarItem.show()
 }
 
 export default gitCommitExtensions
